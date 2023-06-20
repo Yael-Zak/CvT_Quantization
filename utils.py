@@ -23,5 +23,17 @@ class ImageDataset(Dataset):
         return len(self.image_filenames)
 
 
+def get_deepest_folder(directory):
+    subdirectories = [f for f in os.listdir(directory) if os.path.isdir(os.path.join(directory, f))]
+    if not subdirectories:
+        return directory
+    else:
+        deepest_subdirectory = max(subdirectories, key=lambda f: get_deepest_folder(os.path.join(directory, f)).count(os.path.sep))
+        return get_deepest_folder(os.path.join(directory, deepest_subdirectory))
+
+
 def collate_fn(batch):
-    return torch.stack(batch)
+    images, labels = zip(*batch)
+    images = torch.stack(images)
+    labels = torch.tensor(labels)
+    return images, labels
