@@ -7,6 +7,7 @@ from transformers import AutoImageProcessor, CvtForImageClassification, CvtModel
 import argparse
 from utils import collate_fn, get_deepest_folder
 import os
+from Quantization import quantize_model
 
 # Load arguments needed
 parser = argparse.ArgumentParser()
@@ -15,6 +16,8 @@ parser.add_argument('--Output_path', default=r'./outputs', type=str, help='path 
 parser.add_argument('--name', default=r'baseline_predictions.txt', type=str, help='path to directory of ImageNet test')
 parser.add_argument('--small_dataset', default=r'C:\Users\matan\Desktop\CvT_huggingface\small_test', type=str, help='path to directory of ImageNet test')
 parser.add_argument('--small_dataset_flag', default=True, type=str, help='run om small test for debug')
+parser.add_argument('--state_dict', default='./models/quantized_model', type=str, help='state dict to load and run the model on')
+parser.add_argument('--to_quantize', default=True, type=str, help='state dict to load and run the model on')
 
 args = parser.parse_args()
 
@@ -42,6 +45,11 @@ dataloader = DataLoader(dataset, batch_size=32, shuffle=False, collate_fn=collat
 # Initialize the Cvt model and image processor
 image_processor = AutoImageProcessor.from_pretrained("microsoft/cvt-13")
 model = CvtForImageClassification.from_pretrained("microsoft/cvt-13", output_hidden_states=True, return_dict=True)
+if args.to_quantize:
+    quantized_state_dict = quantize_model(model, compute=True)
+
+# load new state model into model
+model.load_state_dict(quantized_state_dict)
 
 # Move model and data to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
