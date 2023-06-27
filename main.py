@@ -9,13 +9,13 @@ from utils import collate_fn, get_deepest_folder
 import os
 from Quantization import quantize_model
 
-# Load arguments needed
+# Load arguments needed - in kaggle this doesn't work, write arguments like in c
 parser = argparse.ArgumentParser()
 parser.add_argument('--image_directory', default=r'C:\Users\matan\Desktop\CvT_huggingface\Validation', type=str, help='path to directory of ImageNet test')
 parser.add_argument('--Output_path', default=r'./outputs', type=str, help='path to directory of ImageNet test')
 parser.add_argument('--name', default=r'baseline_predictions.txt', type=str, help='path to directory of ImageNet test')
 parser.add_argument('--small_dataset', default=r'C:\Users\matan\Desktop\CvT_huggingface\small_test', type=str, help='path to directory of ImageNet test')
-parser.add_argument('--small_dataset_flag', default=True, type=str, help='run om small test for debug')
+parser.add_argument('--small_dataset_flag', default=False, type=str, help='run om small test for debug')
 parser.add_argument('--state_dict', default='./models/quantized_model', type=str, help='state dict to load and run the model on')
 parser.add_argument('--to_quantize', default=True, type=str, help='state dict to load and run the model on')
 
@@ -61,12 +61,15 @@ predictions = []
 # Perform inference on the dataset
 model.eval()
 with torch.no_grad():
-    for images, labels in dataloader:
+    for index, (images, labels) in enumerate(dataloader):
         images = images.to(device)
         inputs = image_processor(images, return_tensors="pt")
         logits = model(**inputs).logits
         predicted_labels = torch.argsort(logits, dim=1, descending=True)[:, :5]  # Get top 5 predicted labels
         predictions.extend(predicted_labels.tolist())
+
+        if index % 50 == 0:
+            print("Processed {} images out of 100,000".format(index))
 
 # Create a list of image filenames sorted alphabetically
 deepest_folder = get_deepest_folder(image_directory)
