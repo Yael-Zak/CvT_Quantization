@@ -60,7 +60,7 @@ def create_validation_folder(output_folder, csv_file, source_folder):
 
 # for some reason relative paths didn't work - try however you want
 validation_path = r'C:\Users\matan\Desktop\CvT_huggingface\ILSVRC2012_img_val'
-labels_path = r'C:\Users\matan\Desktop\CvT_huggingface\CvT_Quantization\ILSVRC2012_validation_ground_truth.txt'
+labels_path = r'C:\Users\matan\Desktop\CvT_huggingface\CvT_Quantization\outputs\ILSVRC2012_validation_ground_truth.txt'
 output_csv_path = r'C:\Users\matan\Desktop\CvT_huggingface\CvT_Quantization\outputs\validation.csv'
 output_path = r'imagenet_val_small'
 
