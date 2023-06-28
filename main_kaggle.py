@@ -87,8 +87,6 @@ image_directory = '0'
 to_quantize = True
 output_path = '1'
 ############################# block 4 - create a prediction file ############################
-# load the label file
-
 # Define transformations for the images
 transform = transforms.Compose([
     Resize((224, 224)),
