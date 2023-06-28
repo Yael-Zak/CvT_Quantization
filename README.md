@@ -1,3 +1,5 @@
+TODO: organize 'main' to be the same as 'main_kaggle'
+
 # CvT_Quantization
 This directory is for the mini-project of the "Deep Learning" course at Technion.
 To run this code you can just download, in the main section change the arguments in the parser.
